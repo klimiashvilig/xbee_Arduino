@@ -148,6 +148,30 @@ void xbee::sendata(String data, int length, char endCh, bool enable_acks) {
 	Serial.println();
 }
 
+void xbee::getFrame(char output_Buff[], char data, int length, char endCh, bool enable_acks) {
+	String frame = "";
+	bufferout[0] = 0x7E;
+	bufferout[1] = (int)floor((length + 14) / 256);
+	bufferout[2] = (length + 14) % 256;
+	bufferout[3] = 0x10;
+	bufferout[4] = 0x00;
+	bufferout[15] = 0x00;
+	if (enable_acks) {
+		bufferout[16] = 0x00;
+	} else {
+		bufferout[16] = 0x01;
+	}
+	
+	for (int i = 0; i < length-1; i++) {
+		bufferout[i + 17] = data;
+	}
+	bufferout[length + 16] = endCh;
+	bufferout[length + 17] = checksum(3, 17 + length - 1, 'O');
+	for (size_t i = 0; i < length + 18; i++) {
+		output_Buff[i] = (bufferout[i] & 0xFF);
+	}
+}
+
 String xbee::receive() {
 	String message = "";
 	while (Serial.available() > 0) {

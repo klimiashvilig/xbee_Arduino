@@ -24,6 +24,8 @@ public:
 	void sendata(String data);
 	// Sends data contained in the string
 	void sendata(String data, int length, char endCh, bool enable_acks);
+	// Returns frame associated with the message
+	void getFrame(char output_Buff[], char data, int length, char endCh, bool enable_acks);
 	// Reads data received and returns as a String
 	String receive();
 	// Creates route between the source and destination (for multi hop networks)
